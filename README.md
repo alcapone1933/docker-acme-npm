@@ -9,7 +9,7 @@
 
 # ACME-NPM Updater
 
-Dieses Projekt stellt einen Docker-Container bereit, der für die automatische Verwaltung von SSL-Zertifikaten über [ACME.SH](https://github.com/acmesh-official/acme.sh) aktualisiert und \
+Dieses Projekt stellt einen Docker-Container bereit, der für die automatische Verwaltung von SSL-Zertifikaten über [ACME.SH](https://github.com/acmesh-official/acme.sh) aktualisiert wird und \
 die Integration mit dem Nginx Proxy Manager (NPM) per API die SSL-Zertifikate Custom einzupflegen. \
 Der Container führt regelmäßige Überprüfungen und Updates durch und kann bei Bedarf auch Benachrichtigungen über [Shoutrrr](https://containrrr.dev/shoutrrr) senden.
 
