@@ -45,7 +45,7 @@ if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
         echo > /dev/null
     else
         # - CERT_CER_NAME=domain.cer
-        cp -av /acme.sh/${DOMAIN}*/fullchain.cer /output/${CERT_CER_NAME:-}
+        cp -av /acme.sh/${DOMAIN}*/fullchain.cer /output/${CERT_CER_NAME:-${DOMAIN}.cer}
         # - CERT_KEY_NAME=domain.key
         cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.key /output/${CERT_KEY_NAME:-}
         # - CERT_CSR_NAME=domain.csr
