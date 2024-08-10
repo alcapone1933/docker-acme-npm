@@ -20,7 +20,8 @@ END_DATE_SECONDS=$(date -d "$END_DATE" +%s)
 CURRENT_DATE_SECONDS=$(date +%s)
 
 # Differenz in Tagen berechnen
-DIFF_DAYS=$(( (END_DATE_SECONDS - CURRENT_DATE_SECONDS) / 86400 ))
+TIME_DEFAULT=${TIME_DEFAULT:-86400}
+DIFF_DAYS=$(( (END_DATE_SECONDS - CURRENT_DATE_SECONDS) / ${TIME_DEFAULT} ))
 
 # Ausgabe und Überprüfung
 if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
