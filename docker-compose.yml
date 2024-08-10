@@ -1,0 +1,34 @@
+services:
+  acme:
+    # build:
+      # dockerfile: ./Dockerfile
+    image: alcapone1933/acme-npm:latest
+    # image: neilpang/acme.sh:latest
+    container_name: acme.sh
+    network_mode: "host"
+    # ports:
+      # - 80:80
+    restart: unless-stopped
+    volumes:
+      - ./acme.sh:/acme.sh
+      # - ./output:/output
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
+      # - ./data:/data
+    environment:
+      - TZ=Europe/Berlin
+      - DOMAIN=
+      # - "CRON_TIME=*/60 * * * *"
+      - SHOUTRRR_URL=
+      - SHOUTRRR_SKIP_TEST=no
+      # - NPM_API=http://<nginx-proxy-manager-ip>:81/api
+      # - NPM_USER=<your-nginx-proxy-manager-username>
+      # - NPM_PASS=<your-nginx-proxy-manager-password>
+      # - DOCKER_CONTAINER=
+      # - OUTPUT_YES=yes
+      # - CERT_CER_NAME=domain.de.cer
+      # - CERT_KEY_NAME=domain.de.key
+      # - CERT_CSR_NAME=domain.de.csr
+      # - PUID=0
+      # - PGID=0
+    labels:
+      - com.centurylinklabs.watchtower.enable=true

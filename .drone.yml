@@ -1,0 +1,80 @@
+---
+kind: pipeline
+type: docker
+name: BUILD-TEST
+steps:
+  - name: Build_Multi-arch
+    image: alcapone1933/drone:docker-buildx
+    privileged: true
+    settings:
+      platforms: linux/amd64,linux/arm64/v8
+      repo: alcapone1933/acme-npm
+      tags: latest
+      dry_run: true
+
+trigger:
+  branch:
+  - master
+  event:
+  - custom
+  - push
+  # - pull_request
+
+---
+kind: pipeline
+type: docker
+name: BUILD-Dockerhub-Version
+steps:
+  - name: Build_Multi-arch
+    image: alcapone1933/drone:docker-buildx
+    privileged: true
+    settings:
+      username:
+        from_secret: DOCKER_USER
+      password:
+        from_secret: DOCKER_PASS
+      platforms: linux/amd64,linux/arm64/v8
+      repo: alcapone1933/acme-npm
+      # tags: latest
+      auto_tag: true
+      auto_tag_suffix: v0.0.1
+
+trigger:
+  branch:
+  - master
+  event:
+  - custom
+  # - push
+  # - pull_request
+
+depends_on:
+  - BUILD-TEST
+
+---
+kind: pipeline
+type: docker
+name: BUILD-Dockerhub-Latest
+steps:
+  - name: Build_Multi-arch
+    image: alcapone1933/drone:docker-buildx
+    privileged: true
+    settings:
+      username:
+        from_secret: DOCKER_USER
+      password:
+        from_secret: DOCKER_PASS
+      platforms: linux/amd64,linux/arm64/v8
+      repo: alcapone1933/acme-npm
+      tags: latest
+      auto_tag: true
+
+trigger:
+  branch:
+  - master
+  event:
+  - custom
+  # - push
+  # - pull_request
+
+depends_on:
+  - BUILD-Dockerhub-Version

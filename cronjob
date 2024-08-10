@@ -1,0 +1,3 @@
+# Cronjob ACME-NPM Updater
+*/30 * * * * /usr/local/bin/log-rotate.sh
+*/60 * * * * /usr/local/bin/update-ssl.sh >> /data/log/cron.log
