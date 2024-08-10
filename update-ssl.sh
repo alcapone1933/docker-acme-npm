@@ -45,7 +45,7 @@ if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
         echo > /dev/null
     else
         # - CERT_CER_NAME=domain.cer
-        cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.cer /output/${CERT_CER_NAME:-}
+        cp -av /acme.sh/${DOMAIN}*/fullchain.cer /output/${CERT_CER_NAME:-}
         # - CERT_KEY_NAME=domain.key
         cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.key /output/${CERT_KEY_NAME:-}
         # - CERT_CSR_NAME=domain.csr
@@ -64,7 +64,7 @@ if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
     if [ -z "${NPM_API:-}" ] ; then
         echo > /dev/null
     else
-        CERT_FILE=$(find /acme.sh/${DOMAIN}* -type f -name "${DOMAIN}.cer" | head -n 1)
+        CERT_FILE=$(find /acme.sh/${DOMAIN}* -type f -name "fullchain.cer" | head -n 1)
         KEY_FILE=$(find /acme.sh/${DOMAIN}* -type f -name "${DOMAIN}.key" | head -n 1)
         if [ -z "$CERT_FILE" ] || [ -z "$KEY_FILE" ]; then
             "$DATUM  FEHLER !!!  - NPM Certificate oder Key für ${DOMAIN} nicht gefuden."
