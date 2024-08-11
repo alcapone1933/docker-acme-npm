@@ -95,10 +95,7 @@ if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
         if [ -z "$CERT_FILE" ] || [ -z "$KEY_FILE" ]; then
             handle_error "NPM-API Zertifikat oder Schlüssel für ${DOMAIN} nicht gefunden."
         else
-            API="${NPM_API}" \
-            IDENTITY="${NPM_USER}" \
-            SECRET="${NPM_PASS}" \
-            if ! /usr/local/bin/npm-add-certificate.sh -n "${DOMAIN}" -c "$CERT_FILE" -k "$KEY_FILE"; then
+            if ! API="${NPM_API}" IDENTITY="${NPM_USER}" SECRET="${NPM_PASS}" /usr/local/bin/npm-add-certificate.sh -n "${DOMAIN}" -c "$CERT_FILE" -k "$KEY_FILE"; then
                 handle_error "NPM-Zertifikat konnte nicht hinzugefügt werden."
             fi
         fi
