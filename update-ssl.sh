@@ -6,14 +6,35 @@ CERT_PATH=$(find /acme.sh/${DOMAIN}* -type f -name "${DOMAIN}.cer" | head -n 1)
 # Anzahl der Tage, die als Warnfrist verwendet werden
 WARNING_DAYS=30
 
+# Funktion für Fehlerbehandlung
+function handle_error() {
+    DATUM_handle_error=$(date +%Y-%m-%d\ %H:%M:%S)
+    local MESSAGE=$1
+    echo "$DATUM_handle_error  FEHLER !!!  - $MESSAGE"
+
+    if [ -n "${SHOUTRRR_URL:-}" ]; then
+        echo "$DATUM_handle_error  SHOUTRRR    - SHOUTRRR NACHRICHT wird gesendet"
+        if ! /usr/local/bin/shoutrrr send --url "${SHOUTRRR_URL}" --message "$(echo -e "ACME-NPM DOCKER \n$DATUM_handle_error    FEHLER !!! \n\n$MESSAGE")" > /dev/null 2>&1; then
+            echo "$DATUM_handle_error  FEHLER !!!  - SHOUTRRR NACHRICHT konnte nicht gesendet werden"
+        else
+            echo "$DATUM_handle_error  SHOUTRRR    - SHOUTRRR NACHRICHT wurde gesendet"
+        fi
+    fi
+    exit 1
+}
+
 # Prüfen, ob die Zertifikatdatei existiert
 if [ ! -f "$CERT_PATH" ]; then
-    echo "$DATUM  FEHLER !!!  - Die Zertifikatdatei $CERT_PATH wurde nicht gefunden."
-    exit 1
+    handle_error "Die Zertifikatdatei ${DOMAIN}.cer wurde nicht gefunden."
 fi
 
 # Ablaufdatum des Zertifikats auslesen
 END_DATE=$(openssl x509 -in "$CERT_PATH" -noout -enddate | cut -d= -f2)
+
+# Prüfen, ob das Auslesen des Ablaufdatums erfolgreich war
+if [ -z "$END_DATE" ]; then
+    handle_error "Das Ablaufdatum des Zertifikats konnte nicht ausgelesen werden."
+fi
 
 # Datum in Sekunden seit der Epoche konvertieren
 END_DATE_SECONDS=$(date -d "$END_DATE" +%s)
@@ -29,59 +50,63 @@ if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
     echo "$DATUM    INFO !!!  - Warnung: Das Zertifikat läuft in weniger als $WARNING_DAYS Tagen ab."
     echo "$DATUM    INFO !!!  - Ablaufdatum: $END_DATE"
     echo "$DATUM    INFO !!!  - Resttage: $DIFF_DAYS"
+    
     # DOCKER STOP
-    if [ -z "${DOCKER_CONTAINER:-}" ] ; then
-        echo > /dev/null
-    else
-        /usr/local/bin/docker stop ${DOCKER_CONTAINER}
+    if [ -n "${DOCKER_CONTAINER:-}" ] ; then
+        if ! /usr/local/bin/docker stop ${DOCKER_CONTAINER}; then
+            handle_error "Docker-Container ${DOCKER_CONTAINER} konnte nicht gestoppt werden."
+        fi
     fi
 
     # ACME.SH
-    /usr/local/bin/acme.sh --cron
-    # NPM
+    if ! /usr/local/bin/acme.sh --cron; then
+        handle_error "ACME.SH Cron-Job konnte nicht ausgeführt werden."
+    fi
 
     # OUTPUT file
-    # if [ -z "${OUTPUT_YES:-}" ] ; then
-    if [[ "${OUTPUT_YES}" =~ (NO|no|No) ]] ; then
-        echo > /dev/null
-    else
+    if ! [[ "${OUTPUT_YES}" =~ (NO|no|No) ]] ; then
         # - CERT_CER_NAME=domain.cer
-        cp -av /acme.sh/${DOMAIN}*/fullchain.cer /output/${CERT_CER_NAME:-${DOMAIN}.cer}
+        if ! cp -av /acme.sh/${DOMAIN}*/fullchain.cer /output/${CERT_CER_NAME:-${DOMAIN}.cer}; then
+            handle_error "Zertifikatsdatei konnte nicht kopiert werden."
+        fi
         # - CERT_KEY_NAME=domain.key
-        cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.key /output/${CERT_KEY_NAME:-}
+        if ! cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.key /output/${CERT_KEY_NAME:-}; then
+            handle_error "Schlüsseldatei konnte nicht kopiert werden."
+        fi
         # - CERT_CSR_NAME=domain.csr
-        cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.csr /output/${CERT_CSR_NAME:-}
+        if ! cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.csr /output/${CERT_CSR_NAME:-}; then
+            handle_error "CSR-Datei konnte nicht kopiert werden."
+        fi
     fi
 
     # DOCKER START
-    if [ -z "${DOCKER_CONTAINER:-}" ] ; then
-        echo > /dev/null
-    else
-        /usr/local/bin/docker start ${DOCKER_CONTAINER}
+    if [ -n "${DOCKER_CONTAINER:-}" ] ; then
+        if ! /usr/local/bin/docker start ${DOCKER_CONTAINER}; then
+            handle_error "Docker-Container ${DOCKER_CONTAINER} konnte nicht gestartet werden."
+        fi
     fi
 
     sleep 10
 
-    if [ -z "${NPM_API:-}" ] ; then
-        echo > /dev/null
-    else
+    # NPM-API
+    if [ -n "${NPM_API:-}" ] ; then
         CERT_FILE=$(find /acme.sh/${DOMAIN}* -type f -name "fullchain.cer" | head -n 1)
         KEY_FILE=$(find /acme.sh/${DOMAIN}* -type f -name "${DOMAIN}.key" | head -n 1)
         if [ -z "$CERT_FILE" ] || [ -z "$KEY_FILE" ]; then
-            "$DATUM  FEHLER !!!  - NPM Certificate oder Key für ${DOMAIN} nicht gefuden."
+            handle_error "NPM-API Zertifikat oder Schlüssel für ${DOMAIN} nicht gefunden."
         else
             API="${NPM_API}" \
             IDENTITY="${NPM_USER}" \
             SECRET="${NPM_PASS}" \
-            /usr/local/bin/npm-add-certificate.sh -n "${DOMAIN}" -c "$CERT_FILE" -k "$KEY_FILE"
+            if ! /usr/local/bin/npm-add-certificate.sh -n "${DOMAIN}" -c "$CERT_FILE" -k "$KEY_FILE"; then
+                handle_error "NPM-Zertifikat konnte nicht hinzugefügt werden."
+            fi
         fi
     fi
 
-    if [ -z "${SHOUTRRR_URL:-}" ] ; then
-        echo > /dev/null
-    else
+    if [ -n "${SHOUTRRR_URL:-}" ] ; then
         echo "$DATUM  SHOUTRRR    - SHOUTRRR NACHRICHT wird gesendet"
-        if ! /usr/local/bin/shoutrrr send --url "${SHOUTRRR_URL}" --message "`echo -e "$DATUM    INFO !!! \n\nUPDATE ACME-NPM \nSSL $DOMAIN"`" > /dev/null 2>&1; then
+        if ! /usr/local/bin/shoutrrr send --url "${SHOUTRRR_URL}" --message "$(echo -e "$DATUM    INFO !!! \n\nUPDATE ACME-NPM \nSSL $DOMAIN")" > /dev/null 2>&1; then
             echo "$DATUM  FEHLER !!!  - SHOUTRRR NACHRICHT konnte nicht gesendet werden"
         else
             echo "$DATUM  SHOUTRRR    - SHOUTRRR NACHRICHT wurde gesendet"
