@@ -36,13 +36,16 @@ docker run --rm -it -v /your/path/acme.sh:/acme.sh --net=host alcapone1933/acme-
 ```bash
 acme.sh --set-default-ca --server letsencrypt
 
-acme.sh --register-account --server letsencrypt  -m  user@example.com
+acme.sh --register-account --server letsencrypt -m user@example.com
 
+acme.sh --issue --standalone -d example.com
 acme.sh --issue --dns dns_ddnss -d example.com
 acme.sh --issue --dns dns_ddnss -d example.com -d '*.example.com'
 
 acme.sh --issue --dns dns_ipv64 -d example.com --server letsencrypt
 acme.sh --issue --dns dns_ipv64 -d example.com -d '*.example.com' --server letsencrypt
+
+acme.sh --issue --alpn --tlsport 8443 --server letsencrypt --keylength 3072 -d example.com
 
 acme.sh --cron
 acme.sh --renew-all

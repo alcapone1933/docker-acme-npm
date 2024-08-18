@@ -3,14 +3,14 @@ LABEL maintainer="alcapone1933 <alcapone1933@cosanostra-cloud.de>" \
       org.opencontainers.image.created="$(date +%Y-%m-%d\ %H:%M)" \
       org.opencontainers.image.authors="alcapone1933 <alcapone1933@cosanostra-cloud.de>" \
       org.opencontainers.image.url="https://hub.docker.com/r/alcapone1933/acme-npm" \
-      org.opencontainers.image.version="v0.0.2" \
+      org.opencontainers.image.version="v0.0.3" \
       org.opencontainers.image.ref.name="alcapone1933/acme-npm" \
       org.opencontainers.image.title="ACME-NPM" \
       org.opencontainers.image.description="Updater ACME-NPM-SSL"
 
 ENV TZ=Europe/Berlin \
     LE_CONFIG_HOME="/acme.sh" \
-    VERSION="v0.0.2" \
+    VERSION="v0.0.3" \
     CRON_TIME="" \
     SHOUTRRR_URL="" \
     SHOUTRRR_SKIP_TEST=no \
@@ -33,6 +33,7 @@ RUN git clone -b master https://github.com/acmesh-official/acme.sh.git /tmp/acme
     mkdir -p /data/log /usr/local/bin /etc/cron.d /output && touch /data/log/cron.log
 
 COPY --chmod=0755 npm-add-certificate.sh /usr/local/bin
+COPY --chmod=0755 npm-single.sh /usr/local/bin
 COPY --chmod=0755 update-ssl.sh /usr/local/bin
 COPY --chmod=0755 entrypoint.sh /usr/local/bin
 COPY --chmod=0755 log-rotate.sh /usr/local/bin
