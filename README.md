@@ -28,6 +28,14 @@ Starten die den Docker Container und richten sie acme.sh ein.
 
 ```bash
 docker run --rm -it -v /your/path/acme.sh:/acme.sh --net=host alcapone1933/acme-npm /bin/bash
+
+# Beispiel
+acme.sh --set-default-ca --server letsencrypt
+acme.sh --register-account --server letsencrypt -m user@example.com
+acme.sh --issue --standalone -d example.com
+
+
+exit
 ```
 
 <details>
@@ -63,6 +71,29 @@ export GOTIFY_TOKEN="123456789ABCDEF"
 
 &nbsp;
 
+### NPM-API (single)
+
+Wenn Sie das Zertifikat an den NPM (NGINX Proxy Manager) senden möchten einmalig,\
+ist es wichtig, den folgenden Befehl auszuführen.\
+Zertifikat sollte vorhanden sein.\
+Vergessen Sie nicht, beim `docker run`-Befehl die Umgebungsvariablen mit anzugeben.
+
+```bash
+docker run --rm -it -v /your/path/acme.sh:/acme.sh \
+--net=host \
+-e DOMAIN=example.de \
+-e NPM_API=http://home.lan:81/api \
+-e NPM_USER=admin@example.com \
+-e NPM_PASS=changeme \
+alcapone1933/acme-npm /bin/bash
+
+npm-single.sh
+
+exit
+```
+
+&nbsp;
+
 ## Docker CLI
 
 ```bash
@@ -75,7 +106,6 @@ docker run -d \
   -e DOMAIN=example.de \
   -e SHOUTRRR_URL= \
   alcapone1933/acme-npm:latest
-
 ```
 ## Docker Compose
 
@@ -94,6 +124,7 @@ services:
     environment:
       - TZ=Europe/Berlin
       - DOMAIN=example.de
+      # - CRON_TIME=* 8 * * 1
       - SHOUTRRR_URL=
       - SHOUTRRR_SKIP_TEST=no
       # - NPM_API=http://<nginx-proxy-manager-ip>:81/api
@@ -103,6 +134,7 @@ services:
       # - OUTPUT_YES=yes
       # - CERT_CER_NAME=example.de.cer
       # - CERT_KEY_NAME=example.de.key
+      # - CERT_CSR_NAME_YES=yes
       # - CERT_CSR_NAME=example.de.csr
 ```
 
@@ -137,6 +169,7 @@ Hier ist eine Liste der verfügbaren Umgebungsvariablen, die du in der `docker-c
 | `CERT_CER_NAME`      | Dateiname für das Zertifikat (Standardwert ist der Domainname `.cer`)          | `$DOMAIN.cer`   | `example.de.cer`         |
 | `CERT_KEY_NAME`      | Dateiname für den Zertifikatschlüssel (Standardwert ist der Domainname `.key`) | `$DOMAIN.key`   | `example.de.key`         |
 | `CERT_CSR_NAME`      | Dateiname für die CSR-Datei (Standardwert ist der Domainname `.csr`)           | `$DOMAIN.csr`   | `example.de.csr`         |
+| `CERT_CSR_NAME_YES`  | Bestimmt, ob CSR-Datei exportiert wird (`yes` oder `no`)                       | `no`            | `yes`                    |
 | `PUID`               | Benutzer-ID, für den `/data` Pfad                                              | `0`             | `1000`                   |
 | `PGID`               | Gruppen-ID,  für den `/data` Pfad                                              | `0`             | `1000`                   |
 

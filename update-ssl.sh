@@ -74,8 +74,10 @@ if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
             handle_error "Schlüsseldatei konnte nicht kopiert werden."
         fi
         # - CERT_CSR_NAME=domain.csr
-        if ! cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.csr /output/${CERT_CSR_NAME:-}; then
-            handle_error "CSR-Datei konnte nicht kopiert werden."
+        if ! [[ "${CERT_CSR_NAME_YES}" =~ (NO|no|No) ]] ; then
+            if ! cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.csr /output/${CERT_CSR_NAME:-}; then
+                handle_error "CSR-Datei konnte nicht kopiert werden."
+            fi
         fi
     fi
 

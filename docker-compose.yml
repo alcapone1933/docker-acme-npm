@@ -17,7 +17,7 @@ services:
     environment:
       - TZ=Europe/Berlin
       - DOMAIN=
-      # - "CRON_TIME=*/60 * * * *"
+      # - "CRON_TIME=* 8 * * 1"
       - SHOUTRRR_URL=
       - SHOUTRRR_SKIP_TEST=no
       # - NPM_API=http://<nginx-proxy-manager-ip>:81/api
@@ -27,6 +27,7 @@ services:
       # - OUTPUT_YES=yes
       # - CERT_CER_NAME=domain.de.cer
       # - CERT_KEY_NAME=domain.de.key
+      # - CERT_CSR_NAME_YES=yes
       # - CERT_CSR_NAME=domain.de.csr
       # - PUID=0
       # - PGID=0

@@ -18,6 +18,7 @@ ENV TZ=Europe/Berlin \
     NPM_USER="" \
     NPM_PASS="" \
     DOCKER_CONTAINER="" \
+    CERT_CSR_NAME_YES="" \
     PUID="0" \
     PGID="0"
 
