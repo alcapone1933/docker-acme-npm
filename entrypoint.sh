@@ -100,9 +100,9 @@ MAX_LINES=1 /usr/local/bin/log-rotate.sh
 
 sleep 5
 
-set tail -f /data/log/cron.log "$@"
-exec "$@" &
-
+#set tail -f /data/log/cron.log "$@"
+#exec "$@" &
+tail -f /data/log/cron.log &
 killpid="$!"
 while true
 do
