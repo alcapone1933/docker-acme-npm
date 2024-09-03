@@ -79,7 +79,7 @@ else
     if [ "$response" -ne 200 ]; then
         echo "$DATUM  FEHLER !!!  - Sie haben keine Verbinfung zur NPM API"
         echo "$DATUM    INFO !!!  - Stoppen sie den Container und Starten sie den Container mit den richtigen Angaben erneut"
-        sleep infinity
+        sleep 600
     else
         echo "$DATUM  CHECK       - NPM-API OK"
         break
