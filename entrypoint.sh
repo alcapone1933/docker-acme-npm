@@ -73,6 +73,7 @@ fi
 if [ -z "${NPM_API:-}" ] ; then
     echo > /dev/null
 else
+    sleep 10
     while true; do
     response=$(curl --write-out "%{http_code}" --silent --output /dev/null --location --request POST "$NPM_API/tokens" --form "identity=$NPM_USER" --form "secret=$NPM_PASS")
     if [ "$response" -ne 200 ]; then
