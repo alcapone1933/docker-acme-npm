@@ -20,7 +20,7 @@ function handle_error() {
             echo "$DATUM_handle_error  SHOUTRRR    - SHOUTRRR NACHRICHT wurde gesendet"
         fi
     fi
-    exit 1
+    # exit 1
 }
 
 # Prüfen, ob die Zertifikatdatei existiert
