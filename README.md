@@ -158,7 +158,7 @@ Hier ist eine Liste der verfügbaren Umgebungsvariablen, die du in der `docker-c
 | -------------------- | ------------------------------------------------------------------------------ | --------------- | ------------------------ |
 | `TZ`                 | Zeitzone                                                                       | `Europe/Berlin` | `Europe/Berlin`          |
 | `DOMAIN`             | Domainname für das SSL-Zertifikat                                              | --------------- | `example.com`            |
-| `CRON_TIME`          | Cron-Schedule für Zertifikat-Updates                                           | `*/60 * * * *`  | `* 8 * * 1`              |        
+| `CRON_TIME`          | Cron-Schedule für Zertifikat-Updates                                           | `0 8 * * *`     | `0 8 * * 1`              |        
 | `SHOUTRRR_URL`       | URL für Shoutrrr-Benachrichtigungen                                            | --------------- | `gotify://...`           |
 | `SHOUTRRR_SKIP_TEST` | Überspringt den Shoutrrr-Test beim Start (`yes` oder `no`)                     | `no`            | `yes`                    |
 | `NPM_API`            | API-URL des Nginx Proxy Managers                                               | --------------- | `http://home.lan:81/api` |
