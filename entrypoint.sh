@@ -90,7 +90,7 @@ fi
 if [ -z "${CRON_TIME:-}" ] ; then
     echo > /dev/null
 else
-    sed -i "s#\0 \8 \* \* \*#$CRON_TIME#g" /etc/cron.d/container_cronjob
+    sed -i "s#0 8 \* \* \*#$CRON_TIME#g" /etc/cron.d/container_cronjob
 fi
 
 MAX_LINES=1 /usr/local/bin/log-rotate.sh
