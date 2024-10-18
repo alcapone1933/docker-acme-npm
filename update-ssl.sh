@@ -64,7 +64,7 @@ if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
     fi
 
     # OUTPUT file
-    if ! [[ "${OUTPUT_YES}" =~ (NO|no|No) ]] ; then
+    if [[ "${OUTPUT_YES}" =~ (YES|yes|Yes) ]] ; then
         # - CERT_CER_NAME=domain.cer
         if ! cp -av /acme.sh/${DOMAIN}*/fullchain.cer /output/${CERT_CER_NAME:-${DOMAIN}.cer}; then
             handle_error "Zertifikatsdatei konnte nicht kopiert werden."
@@ -74,7 +74,7 @@ if [ "$DIFF_DAYS" -le "$WARNING_DAYS" ]; then
             handle_error "Schlüsseldatei konnte nicht kopiert werden."
         fi
         # - CERT_CSR_NAME=domain.csr
-        if ! [[ "${CERT_CSR_NAME_YES}" =~ (NO|no|No) ]] ; then
+        if [[ "${CERT_CSR_NAME_YES}" =~ (YES|yes|Yes) ]] ; then
             if ! cp -av /acme.sh/${DOMAIN}*/${DOMAIN}.csr /output/${CERT_CSR_NAME:-}; then
                 handle_error "CSR-Datei konnte nicht kopiert werden."
             fi
