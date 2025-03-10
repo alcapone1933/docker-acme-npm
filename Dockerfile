@@ -1,7 +1,8 @@
 FROM alcapone1933/alpine:latest
-LABEL maintainer="alcapone1933 <alcapone1933@cosanostra-cloud.de>" \
-      org.opencontainers.image.created="$(date +%Y-%m-%d\ %H:%M)" \
-      org.opencontainers.image.authors="alcapone1933 <alcapone1933@cosanostra-cloud.de>" \
+ARG BUILD_DATE
+LABEL maintainer="alcapone1933 alcapone1933@cosanostra-cloud.de" \
+      org.opencontainers.image.created="$BUILD_DATE" \
+      org.opencontainers.image.authors="alcapone1933 alcapone1933@cosanostra-cloud.de" \
       org.opencontainers.image.url="https://hub.docker.com/r/alcapone1933/acme-npm" \
       org.opencontainers.image.version="v0.0.4" \
       org.opencontainers.image.ref.name="alcapone1933/acme-npm" \
