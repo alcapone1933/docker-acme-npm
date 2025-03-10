@@ -25,19 +25,6 @@ kind: pipeline
 type: docker
 name: BUILD-Dockerhub
 steps:
-  - name: Build_Multi-arch-Version
-    image: alcapone1933/drone:docker-buildx
-    privileged: true
-    settings:
-      username:
-        from_secret: DOCKER_USER
-      password:
-        from_secret: DOCKER_PASS
-      platforms: linux/amd64,linux/arm64/v8
-      repo: alcapone1933/acme-npm
-      # tags: latest
-      auto_tag: true
-      auto_tag_suffix: v0.0.4
   - name: Build_Multi-arch-Latest
     image: alcapone1933/drone:docker-buildx
     privileged: true
@@ -48,15 +35,16 @@ steps:
         from_secret: DOCKER_PASS
       platforms: linux/amd64,linux/arm64/v8
       repo: alcapone1933/acme-npm
-      tags: latest
-      auto_tag: true
+      tags: latest,v0.0.4
+      #auto_tag: true
+      #auto_tag_suffix: 
+
 trigger:
   branch:
   - master
   event:
   - custom
   # - push
-  # - pull_request
 
 depends_on:
   - BUILD-TEST
